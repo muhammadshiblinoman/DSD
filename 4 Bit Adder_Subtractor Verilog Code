@@ -1,0 +1,30 @@
+module fulladder(s,cout,a,b,cin);
+	input a,b,cin;
+	output s,cout;
+	halfadder h1(s1,c1,a,b);
+	halfadder h2(s,c2,s1,cin);
+	or(cout,c1,c2);
+endmodule
+
+module halfadder(s,cout,a,b);
+	input a,b;
+	output s,cout;
+	xor(s,a,b);
+	and(cout,a,b);
+endmodule
+
+module adderSubtractor(s,cout,a,b,cin);
+	input [3:0] a,b;
+	input cin;
+	output [3:0] s;
+	output cout;
+	wire [3:0] bxor;
+	xor(bxor[0],b[0],cin);
+	xor(bxor[1],b[1],cin);
+	xor(bxor[2],b[2],cin);
+	xor(bxor[3],b[3],cin);
+	fulladder fa1(s[0],c1,a[0],bxor[0],cin);
+	fulladder fa2(s[1],c2,a[1],bxor[1],c1);
+	fulladder fa3(s[2],c3,a[2],bxor[2],c2);
+	fulladder fa4(s[3],cout,a[3],bxor[3],c3);
+endmodule
