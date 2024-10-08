@@ -1,0 +1,44 @@
+module master(j,k,clr,clk,q,qbar);
+  input j,k,clr,clk;
+  output q,qbar;
+  wire a,b,y,ybar,c,d;
+
+  nand (a,qbar,j,clr,clk);
+  nand (b,q,k,clr,clk);
+  nand (y,a,ybar);
+  nand(ybar,y,clr,b);
+  nand (c,y,~clk);
+  nand(d,ybar,~clk);
+  nand(q,c,qbar);
+  nand(qbar,q,clr,d);
+
+endmodule
+
+module counter(c,d,x,xbar);
+  input c,d;
+  output [3:0] x;
+  output [3:0]xbar;
+  wire clr1,clr2;
+
+  master c1(1,1,clr2,d,x[0],xbar[0]);
+  master c2(1,1,clr2,x[0],x[1],xbar[1]);
+  master c3(1,1,clr2,x[1],x[2],xbar[2]);
+  master c4(1,1,clr2,x[2],x[3],xbar[3]);
+  nand(clr1,x[2],x[3]);
+  and(clr2,clr1,c);
+
+endmodule
+
+module testjk();
+  reg o,p;
+  wire [3:0] g,h;
+  counter xp(o,p,g,h);
+ initial p=1;
+   always #12.5 p=~p;
+ initial 
+  begin 
+   #0 o=0;
+   #1 o=1;
+end
+
+endmodule
